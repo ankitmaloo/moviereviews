@@ -971,3 +971,196 @@ body::after {
     border-radius: 0.9rem;
   }
 }
+
+/* New flow classes */
+.header-brand {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.signal-row {
+  margin-top: 0.75rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: 0.85rem;
+  padding: 0.62rem 0.78rem;
+  background: #fbf6ee;
+  display: grid;
+  gap: 0.24rem;
+}
+
+.signal-label,
+.signal-value {
+  margin: 0;
+}
+
+.signal-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--orange-strong);
+}
+
+.signal-value {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.page-title {
+  margin: 0.45rem 0 0;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(1.35rem, 3vw, 1.95rem);
+  line-height: 1.12;
+}
+
+.page-copy {
+  margin: 0.58rem 0 0;
+  color: var(--ink-soft);
+  max-width: 72ch;
+  line-height: 1.56;
+  font-size: 0.93rem;
+}
+
+.search-form,
+.settings-card {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.field-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.action-button {
+  border-radius: 0.72rem;
+  border: 1px solid transparent;
+  padding: 0.66rem 0.95rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+  background: var(--teal);
+  color: #f5fffd;
+}
+
+.action-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.rating-pill {
+  margin: 0;
+  border: 1px solid rgba(15, 118, 110, 0.3);
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--teal-strong);
+  padding: 0.36rem 0.68rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.review-block {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.section-heading {
+  margin: 0;
+  font-size: 0.96rem;
+  color: var(--orange-strong);
+}
+
+.body-text {
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.55;
+  font-size: 0.9rem;
+}
+
+.statement-list,
+.source-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.statement-item,
+.source-item {
+  border: 1px solid var(--line);
+  border-radius: 0.72rem;
+  padding: 0.7rem;
+  background: #fffdf8;
+}
+
+.source-item {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.source-name,
+.source-note {
+  margin: 0;
+}
+
+.source-name {
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.source-note {
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+}
+
+.source-link {
+  font-size: 0.84rem;
+  color: var(--teal-strong);
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.review-progress {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.progress-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.38rem;
+}
+
+.progress-item {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.progress-summary {
+  margin: 0;
+}
+
+.progress-detail {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  background: #fffdf8;
+  padding: 0.5rem 0.58rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
