@@ -315,6 +315,18 @@ body::after {
   font-size: 0.9rem;
 }
 
+.status-line {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+}
+
+.error-line {
+  margin: 0;
+  color: #7d1333;
+  font-size: 0.86rem;
+}
+
 .swipe-actions {
   margin-top: 1.05rem;
   display: grid;
@@ -363,6 +375,30 @@ body::after {
 .muted {
   color: var(--ink-soft);
   font-weight: 500;
+}
+
+.agent-block {
+  margin-top: 0.76rem;
+  border: 1px solid rgba(15, 118, 110, 0.25);
+  background: rgba(15, 118, 110, 0.08);
+  border-radius: 0.78rem;
+  padding: 0.66rem 0.72rem;
+}
+
+.agent-label {
+  margin: 0;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.agent-copy {
+  margin: 0.28rem 0 0.6rem;
+  color: var(--ink);
+  font-size: 0.86rem;
+  line-height: 1.44;
 }
 
 .swipe-stat-grid {
@@ -554,6 +590,12 @@ body::after {
 
 .btn:hover {
   transform: translateY(-1px);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.68;
+  transform: none;
 }
 
 .btn:focus-visible {

@@ -2,11 +2,13 @@ import { useState } from 'react'
 
 import { MovieReviewPage } from './features/MovieReviewPage'
 import { SwipePreferencePage } from './features/SwipePreferencePage'
+import type { SwipeAnalysis } from './lib/codexAgentSdk'
 
 type WorkflowView = 'swipe' | 'review'
 
 export default function App() {
   const [view, setView] = useState<WorkflowView>('swipe')
+  const [swipeProfile, setSwipeProfile] = useState<SwipeAnalysis | null>(null)
 
   return (
     <div className="app-shell">
@@ -35,10 +37,16 @@ export default function App() {
         </nav>
       </header>
 
-      <main className="app-main">{view === 'swipe' ? <SwipePreferencePage /> : <MovieReviewPage />}</main>
+      <main className="app-main">
+        {view === 'swipe' ? (
+          <SwipePreferencePage onProfileUpdate={setSwipeProfile} />
+        ) : (
+          <MovieReviewPage swipeContext={swipeProfile} />
+        )}
+      </main>
 
       <footer className="app-footer">
-        <p>Frontend-only demo. No backend required.</p>
+        <p>Frontend Codex Agent SDK runtime with local skill files loaded in-browser.</p>
       </footer>
     </div>
   )

@@ -21,7 +21,8 @@ const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
 >(({ className, value = 0, ...props }, ref) => {
-  const bucket = Math.min(100, Math.max(0, Math.round(value / 10) * 10)) as keyof typeof progressBucketClasses
+  const normalizedValue = value ?? 0
+  const bucket = Math.min(100, Math.max(0, Math.round(normalizedValue / 10) * 10)) as keyof typeof progressBucketClasses
 
   return (
     <ProgressPrimitive.Root ref={ref} className={cn('progress-root', className)} {...props}>

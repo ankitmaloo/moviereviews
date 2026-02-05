@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+
+import { codexAgentSdk, type SwipeAnalysis } from '@/lib/codexAgentSdk'
 
 type SwipeMovie = {
   id: number
@@ -15,6 +17,10 @@ type Direction = 'left' | 'right'
 type GenrePreference = {
   genre: string
   score: number
+}
+
+type SwipePreferencePageProps = {
+  onProfileUpdate: (profile: SwipeAnalysis | null) => void
 }
 
 const swipeQueue: SwipeMovie[] = [
@@ -106,10 +112,13 @@ function userTasteSummary(preferences: GenrePreference[]) {
   return `You currently lean toward ${positive.map((item) => item.genre).join(', ')} stories.`
 }
 
-export function SwipePreferencePage() {
+export function SwipePreferencePage({ onProfileUpdate }: SwipePreferencePageProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [likedMovies, setLikedMovies] = useState<SwipeMovie[]>([])
   const [dislikedMovies, setDislikedMovies] = useState<SwipeMovie[]>([])
+  const [agentProfile, setAgentProfile] = useState<SwipeAnalysis | null>(null)
+  const [agentError, setAgentError] = useState('')
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
 
   const activeMovie = swipeQueue[currentIndex]
   const swipeCount = likedMovies.length + dislikedMovies.length
@@ -136,6 +145,60 @@ export function SwipePreferencePage() {
 
   const tasteLine = userTasteSummary(genrePreferences)
 
+  useEffect(() => {
+    if (!workflowComplete || isAnalyzing || agentProfile) {
+      return
+    }
+
+    let cancelled = false
+    setIsAnalyzing(true)
+    setAgentError('')
+
+    codexAgentSdk
+      .analyzeSwipePreferences({
+        likes: likedMovies.map((movie) => ({
+          title: movie.title,
+          year: movie.year,
+          genres: movie.genres,
+          runtime: movie.runtime,
+          mood: movie.mood,
+          setup: movie.setup
+        })),
+        dislikes: dislikedMovies.map((movie) => ({
+          title: movie.title,
+          year: movie.year,
+          genres: movie.genres,
+          runtime: movie.runtime,
+          mood: movie.mood,
+          setup: movie.setup
+        }))
+      })
+      .then((profile) => {
+        if (cancelled) {
+          return
+        }
+        setAgentProfile(profile)
+        onProfileUpdate(profile)
+      })
+      .catch((error: unknown) => {
+        if (cancelled) {
+          return
+        }
+        const message = error instanceof Error ? error.message : 'Could not generate profile from frontend SDK runtime.'
+        setAgentError(message)
+        onProfileUpdate(null)
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsAnalyzing(false)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [workflowComplete, likedMovies, dislikedMovies, isAnalyzing, agentProfile, onProfileUpdate])
+
   function handleSwipe(direction: Direction) {
     if (!activeMovie) {
       return
@@ -154,6 +217,9 @@ export function SwipePreferencePage() {
     setCurrentIndex(0)
     setLikedMovies([])
     setDislikedMovies([])
+    setAgentProfile(null)
+    setAgentError('')
+    onProfileUpdate(null)
   }
 
   return (
@@ -162,7 +228,7 @@ export function SwipePreferencePage() {
         <p className="eyebrow">Step 1: Preference Discovery</p>
         <h2 className="section-title">Swipe left or right to train your movie taste profile</h2>
         <p className="section-copy">
-          This workflow uses your swipe behavior to estimate favorite genres, runtime comfort, and mood alignment.
+          This workflow uses frontend Codex Agent SDK logic with loaded skills to infer your taste profile.
         </p>
       </header>
 
@@ -180,9 +246,13 @@ export function SwipePreferencePage() {
         <article className="swipe-card" aria-live="polite">
           {workflowComplete ? (
             <div className="swipe-finished">
-              <h3 className="card-title">Preference profile ready</h3>
-              <p className="card-copy">{tasteLine}</p>
-              <p className="recommendation">Recommendation: {recommendation}</p>
+              <h3 className="card-title">
+                {agentProfile ? 'Agent profile ready' : isAnalyzing ? 'Building agent profile' : 'Preference profile ready'}
+              </h3>
+              <p className="card-copy">{agentProfile?.tasteThesis || tasteLine}</p>
+              <p className="recommendation">Recommendation: {agentProfile?.recommendation || recommendation}</p>
+              {isAnalyzing ? <p className="status-line">Frontend Codex Agent SDK is analyzing your swipes...</p> : null}
+              {agentError ? <p className="error-line">{agentError}</p> : null}
               <button className="btn btn-secondary" onClick={resetWorkflow}>
                 Run Again
               </button>
@@ -211,10 +281,16 @@ export function SwipePreferencePage() {
         </article>
 
         <aside className="preference-panel">
-          <h3 className="panel-title">Live preference signals</h3>
-          <p className="panel-copy">{tasteLine}</p>
+          <h3 className="panel-title">{agentProfile ? agentProfile.personaLabel : 'Live preference signals'}</h3>
+          <p className="panel-copy">{agentProfile?.tasteThesis || tasteLine}</p>
           <ul className="preference-list">
-            {genrePreferences.length === 0 ? (
+            {agentProfile ? (
+              agentProfile.greenFlags.map((item) => (
+                <li className="preference-item" key={item}>
+                  <span>{item}</span>
+                </li>
+              ))
+            ) : genrePreferences.length === 0 ? (
               <li className="preference-item muted">No genre signal yet</li>
             ) : (
               genrePreferences.slice(0, 5).map((item) => (
@@ -225,6 +301,15 @@ export function SwipePreferencePage() {
               ))
             )}
           </ul>
+
+          {agentProfile ? (
+            <div className="agent-block">
+              <p className="agent-label">Usually avoid</p>
+              <p className="agent-copy">{agentProfile.usuallyAvoid.join(' • ')}</p>
+              <p className="agent-label">Depends on</p>
+              <p className="agent-copy">{agentProfile.dependsOn.join(' • ')}</p>
+            </div>
+          ) : null}
 
           <div className="swipe-stat-grid">
             <div className="stat-card">
