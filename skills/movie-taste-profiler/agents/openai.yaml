@@ -1,0 +1,4 @@
+interface:
+  display_name: "Movie Taste Profiler"
+  short_description: "Infer a viewer movie persona from likes and dislikes."
+  default_prompt: "Analyze liked vs disliked movies (including quiz_handoff if provided) to infer a taste profile, key themes, and a concise user type; include a clear preferences card and ask the user to rate one movie next."

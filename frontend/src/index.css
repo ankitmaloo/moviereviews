@@ -1,0 +1,303 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 43 62% 96%;
+  --foreground: 205 43% 18%;
+  --card: 0 0% 100%;
+  --card-foreground: 205 35% 18%;
+  --border: 199 31% 85%;
+  --primary: 193 85% 35%;
+  --primary-foreground: 0 0% 98%;
+  --accent: 32 89% 53%;
+  --accent-foreground: 209 46% 17%;
+  --muted: 195 29% 91%;
+  --muted-foreground: 203 20% 37%;
+  --radius: 1rem;
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply m-0 min-h-screen bg-background font-sans text-foreground antialiased;
+  background-image: radial-gradient(circle at 12% 9%, rgba(21, 124, 165, 0.18), transparent 34%),
+    radial-gradient(circle at 88% 15%, rgba(245, 152, 38, 0.2), transparent 28%),
+    linear-gradient(180deg, #fdf8ef 0%, #f8f2e8 100%);
+}
+
+#root {
+  @apply min-h-screen;
+}
+
+.page-shell {
+  @apply mx-auto flex max-w-7xl flex-col gap-8 px-4 py-8 sm:px-8;
+}
+
+.hero {
+  @apply grid gap-6 lg:grid-cols-[1.25fr_1fr];
+}
+
+.hero-copy {
+  @apply flex flex-col justify-center gap-4;
+}
+
+.hero-title {
+  @apply font-display text-4xl leading-tight text-foreground sm:text-5xl;
+}
+
+.hero-text {
+  @apply max-w-2xl text-base leading-relaxed text-muted-foreground;
+}
+
+.hero-actions {
+  @apply mt-2 flex flex-wrap gap-3;
+}
+
+.content-grid {
+  @apply grid gap-6 lg:grid-cols-2;
+}
+
+.card {
+  @apply rounded-3xl border border-border bg-card/95 shadow-[0_20px_50px_-30px_rgba(10,43,70,0.4)] backdrop-blur;
+}
+
+.card-header {
+  @apply space-y-1 p-6 pb-4;
+}
+
+.card-title {
+  @apply font-display text-2xl text-card-foreground;
+}
+
+.card-description {
+  @apply text-sm text-muted-foreground;
+}
+
+.card-content {
+  @apply px-6 pb-6;
+}
+
+.card-footer {
+  @apply flex items-center gap-3 px-6 pb-6;
+}
+
+.profile-card {
+  @apply h-full;
+}
+
+.persona-content {
+  @apply flex items-center gap-4;
+}
+
+.persona-name {
+  @apply text-lg font-semibold text-card-foreground;
+}
+
+.persona-subtitle {
+  @apply text-sm text-muted-foreground;
+}
+
+.persona-footer {
+  @apply flex-col items-start;
+}
+
+.controls-grid {
+  @apply grid gap-4;
+}
+
+.control-group {
+  @apply grid gap-2 rounded-2xl border border-border/80 bg-muted/45 p-3;
+}
+
+.control-head {
+  @apply flex items-center justify-between;
+}
+
+.toggle-row {
+  @apply mt-1 flex items-center justify-between rounded-2xl border border-border/80 bg-muted/45 p-3;
+}
+
+.label-text {
+  @apply text-sm font-semibold text-card-foreground;
+}
+
+.value-text {
+  @apply text-sm font-medium text-primary;
+}
+
+.hint-text {
+  @apply text-xs text-muted-foreground;
+}
+
+.results-list {
+  @apply grid gap-4;
+}
+
+.movie-item {
+  @apply space-y-2 rounded-2xl border border-border/80 bg-card p-4;
+}
+
+.movie-head {
+  @apply flex items-center justify-between gap-3;
+}
+
+.movie-title {
+  @apply font-display text-xl text-card-foreground;
+}
+
+.movie-year {
+  @apply font-sans text-sm text-muted-foreground;
+}
+
+.movie-meta {
+  @apply text-xs uppercase tracking-wide text-muted-foreground;
+}
+
+.movie-summary {
+  @apply text-sm leading-relaxed text-card-foreground;
+}
+
+.review-note {
+  @apply flex items-start gap-2 rounded-xl bg-muted/55 p-2 text-sm text-card-foreground;
+}
+
+.icon {
+  @apply mt-[2px] h-4 w-4 shrink-0 text-primary;
+}
+
+.badge {
+  @apply inline-flex w-fit items-center rounded-full bg-accent px-3 py-1 text-xs font-semibold uppercase tracking-wide text-accent-foreground;
+}
+
+.score-chip {
+  @apply inline-flex min-w-12 justify-center rounded-full px-3 py-1 text-xs font-semibold;
+}
+
+.score-high {
+  @apply bg-teal-600/15 text-teal-900;
+}
+
+.score-mid {
+  @apply bg-amber-500/20 text-amber-900;
+}
+
+.score-low {
+  @apply bg-rose-500/20 text-rose-900;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-full font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+}
+
+.btn-primary {
+  @apply bg-primary text-primary-foreground shadow-md shadow-primary/25 hover:brightness-110;
+}
+
+.btn-outline {
+  @apply border border-primary/40 bg-card text-primary hover:bg-primary/10;
+}
+
+.btn-ghost {
+  @apply bg-transparent text-card-foreground hover:bg-muted;
+}
+
+.btn-size-default {
+  @apply h-11 px-5 text-sm;
+}
+
+.btn-size-small {
+  @apply h-9 px-4 text-xs;
+}
+
+.slider-root {
+  @apply relative flex h-5 w-full touch-none select-none items-center;
+}
+
+.slider-track {
+  @apply relative h-2 w-full grow overflow-hidden rounded-full bg-muted;
+}
+
+.slider-range {
+  @apply absolute h-full bg-primary;
+}
+
+.slider-thumb {
+  @apply block h-4 w-4 rounded-full border-2 border-primary bg-card ring-offset-background transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none;
+}
+
+.switch-root {
+  @apply peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary;
+}
+
+.switch-thumb {
+  @apply pointer-events-none block h-5 w-5 rounded-full bg-card shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0;
+}
+
+.progress-root {
+  @apply relative h-2 w-full overflow-hidden rounded-full bg-muted;
+}
+
+.progress-indicator {
+  @apply h-full w-full flex-1 bg-primary transition-all;
+}
+
+.progress-value-0 {
+  transform: translateX(-100%);
+}
+
+.progress-value-10 {
+  transform: translateX(-90%);
+}
+
+.progress-value-20 {
+  transform: translateX(-80%);
+}
+
+.progress-value-30 {
+  transform: translateX(-70%);
+}
+
+.progress-value-40 {
+  transform: translateX(-60%);
+}
+
+.progress-value-50 {
+  transform: translateX(-50%);
+}
+
+.progress-value-60 {
+  transform: translateX(-40%);
+}
+
+.progress-value-70 {
+  transform: translateX(-30%);
+}
+
+.progress-value-80 {
+  transform: translateX(-20%);
+}
+
+.progress-value-90 {
+  transform: translateX(-10%);
+}
+
+.progress-value-100 {
+  transform: translateX(0);
+}
+
+.avatar-root {
+  @apply relative flex h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-primary/30;
+}
+
+.avatar-image {
+  @apply aspect-square h-full w-full;
+}
+
+.avatar-fallback {
+  @apply flex h-full w-full items-center justify-center bg-primary text-sm font-semibold text-primary-foreground;
+}

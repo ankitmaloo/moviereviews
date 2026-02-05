@@ -1,0 +1,4 @@
+interface:
+  display_name: "Movie Taste Binary Quiz"
+  short_description: "Infer taste from ~10 yes/no movie prompts (unseen is a signal)."
+  default_prompt: "Ask ~10 binary questions anchored on popular films; treat not-seen as informative; output a broad taste profile, a visible preference snapshot, one request to rate a movie, and a quiz_handoff JSON block for movie-taste-profiler."
