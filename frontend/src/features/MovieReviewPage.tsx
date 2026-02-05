@@ -167,8 +167,8 @@ function normalize(text: string) {
   return text.trim().toLowerCase()
 }
 
-function stars(rating: number) {
-  return `${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}`
+function ratingLabel(rating: number) {
+  return `${rating}/5`
 }
 
 export function MovieReviewPage() {
@@ -185,6 +185,7 @@ export function MovieReviewPage() {
     setSearchAttempt(query)
 
     if (!normalizedQuery) {
+      setSelectedMovie(null)
       return
     }
 
@@ -199,7 +200,10 @@ export function MovieReviewPage() {
 
     if (partialMatch) {
       setSelectedMovie(partialMatch)
+      return
     }
+
+    setSelectedMovie(null)
   }
 
   const noMatchFound =
@@ -270,7 +274,7 @@ export function MovieReviewPage() {
                 <li className="user-review-item" key={review.id}>
                   <div className="user-review-head">
                     <p className="user-name">{review.author}</p>
-                    <p className="user-rating">{stars(review.rating)}</p>
+                    <p className="user-rating">{ratingLabel(review.rating)}</p>
                   </div>
                   <p className="user-date">{review.postedAt}</p>
                   <p className="user-text">{review.text}</p>
