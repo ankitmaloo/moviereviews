@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react'
 import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 
 import { LoreExplorerPage } from './features/LoreExplorerPage'
+import { MovieReviewPage } from './features/MovieReviewPage'
 import { PersonalizedReviewPage } from './features/PersonalizedReviewPage'
+import { SwipePreferencePage } from './features/SwipePreferencePage'
 import { VersusVotePage } from './features/VersusVotePage'
 import type { MovieRecord } from './lib/movies'
 import { applyVersusVote, initialTasteProfile, rankGenres, type TasteProfile } from './lib/taste'
@@ -30,9 +32,10 @@ export default function App() {
     <div className="app-shell">
       <header className="app-header">
         <p className="brand-kicker">Movie Match Lab</p>
-        <h1 className="app-title">Three-screen flow for taste, reviews, and interactive lore</h1>
+        <h1 className="app-title">Taste, reviews, and interactive lore all in one flow</h1>
         <p className="app-subtitle">
-          Vote on movie matchups, search for a personalized review, and jump into fan theories for films you have watched.
+          Vote on movie matchups, swipe to infer preferences, look up quick reviews, and jump into fan theories for films
+          you have watched.
         </p>
         <nav className="top-nav" aria-label="Movie workflow pages">
           <NavLink
@@ -43,15 +46,27 @@ export default function App() {
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? 'nav-link is-active' : 'nav-link')}
+            to="/swipe"
+          >
+            2. Swipe Preferences
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? 'nav-link is-active' : 'nav-link')}
             to="/review"
           >
-            2. Personalized Review
+            3. Personalized Review
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? 'nav-link is-active' : 'nav-link')}
+            to="/review-lookup"
+          >
+            4. Review Lookup
           </NavLink>
           <NavLink
             className={({ isActive }) => (isActive ? 'nav-link is-active' : 'nav-link')}
             to="/lore"
           >
-            3. Lore & Theories
+            5. Lore & Theories
           </NavLink>
         </nav>
         <div className="profile-strip">
@@ -71,6 +86,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/vote" replace />} />
           <Route path="/vote" element={<VersusVotePage profile={tasteProfile} onVote={handleVote} />} />
+          <Route path="/swipe" element={<SwipePreferencePage />} />
           <Route
             path="/review"
             element={
@@ -81,6 +97,7 @@ export default function App() {
               />
             }
           />
+          <Route path="/review-lookup" element={<MovieReviewPage />} />
           <Route
             path="/lore"
             element={<LoreExplorerPage profile={tasteProfile} watchedMovieSlugs={watchedMovieSlugs} />}

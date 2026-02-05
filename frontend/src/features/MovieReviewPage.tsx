@@ -185,6 +185,7 @@ export function MovieReviewPage() {
     setSearchAttempt(query)
 
     if (!normalizedQuery) {
+      setSelectedMovie(null)
       return
     }
 
@@ -199,7 +200,10 @@ export function MovieReviewPage() {
 
     if (partialMatch) {
       setSelectedMovie(partialMatch)
+      return
     }
+
+    setSelectedMovie(null)
   }
 
   const noMatchFound =
