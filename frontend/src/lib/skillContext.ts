@@ -49,25 +49,24 @@ const skillBundles: SkillBundle[] = [
   }
 ]
 
-function trimBlock(text: string, maxChars = 4000) {
+function truncate(text: string, maxChars = 3500) {
   if (text.length <= maxChars) {
     return text
   }
   return `${text.slice(0, maxChars)}\n...[truncated]`
 }
 
+export function listLoadedSkills() {
+  return skillBundles.map((bundle) => bundle.name)
+}
+
 export function skillContextForPrompt() {
   return skillBundles
     .map((bundle) => {
       const files = bundle.files
-        .map((file) => `FILE: ${file.path}\n${trimBlock(file.content)}`)
+        .map((file) => `FILE: ${file.path}\n${truncate(file.content)}`)
         .join('\n\n')
-
       return `=== SKILL BUNDLE: ${bundle.name} ===\n${files}`
     })
     .join('\n\n')
-}
-
-export function listLoadedSkills() {
-  return skillBundles.map((bundle) => bundle.name)
 }

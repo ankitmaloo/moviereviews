@@ -1,14 +1,17 @@
 import { useState } from 'react'
 
 import { MovieReviewPage } from './features/MovieReviewPage'
+import { SettingsPage } from './features/SettingsPage'
 import { SwipePreferencePage } from './features/SwipePreferencePage'
-import type { SwipeAnalysis } from './lib/codexAgentSdk'
+import { getAgentRuntimeInfo, type SwipeAnalysis } from './lib/api'
 
-type WorkflowView = 'swipe' | 'review'
+type WorkflowView = 'swipe' | 'review' | 'settings'
 
 export default function App() {
   const [view, setView] = useState<WorkflowView>('swipe')
   const [swipeProfile, setSwipeProfile] = useState<SwipeAnalysis | null>(null)
+  const [preferenceText, setPreferenceText] = useState('')
+  const runtimeInfo = getAgentRuntimeInfo()
 
   return (
     <div className="app-shell">
@@ -34,19 +37,32 @@ export default function App() {
           >
             2. Review Lookup
           </button>
+          <button
+            className={view === 'settings' ? 'nav-btn is-active' : 'nav-btn'}
+            aria-current={view === 'settings' ? 'page' : undefined}
+            onClick={() => setView('settings')}
+          >
+            3. Settings
+          </button>
         </nav>
       </header>
 
       <main className="app-main">
         {view === 'swipe' ? (
-          <SwipePreferencePage onProfileUpdate={setSwipeProfile} />
+          <SwipePreferencePage onProfileUpdate={setSwipeProfile} preferenceText={preferenceText} />
+        ) : view === 'review' ? (
+          <MovieReviewPage swipeContext={swipeProfile} preferenceText={preferenceText} />
         ) : (
-          <MovieReviewPage swipeContext={swipeProfile} />
+          <SettingsPage
+            preferenceText={preferenceText}
+            onPreferenceTextChange={setPreferenceText}
+            loadedSkills={runtimeInfo.loadedSkills}
+          />
         )}
       </main>
 
       <footer className="app-footer">
-        <p>Frontend Codex Agent SDK runtime with local skill files loaded in-browser.</p>
+        <p>Frontend Codex runtime + local skills power swipe analysis and accurate, human-friendly review generation.</p>
       </footer>
     </div>
   )

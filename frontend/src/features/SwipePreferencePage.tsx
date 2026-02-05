@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { codexAgentSdk, type SwipeAnalysis } from '@/lib/codexAgentSdk'
+import { analyzeSwipePreferences, type SwipeAnalysis } from '@/lib/api'
 
 type SwipeMovie = {
   id: number
@@ -21,6 +21,7 @@ type GenrePreference = {
 
 type SwipePreferencePageProps = {
   onProfileUpdate: (profile: SwipeAnalysis | null) => void
+  preferenceText: string
 }
 
 const swipeQueue: SwipeMovie[] = [
@@ -112,7 +113,7 @@ function userTasteSummary(preferences: GenrePreference[]) {
   return `You currently lean toward ${positive.map((item) => item.genre).join(', ')} stories.`
 }
 
-export function SwipePreferencePage({ onProfileUpdate }: SwipePreferencePageProps) {
+export function SwipePreferencePage({ onProfileUpdate, preferenceText }: SwipePreferencePageProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [likedMovies, setLikedMovies] = useState<SwipeMovie[]>([])
   const [dislikedMovies, setDislikedMovies] = useState<SwipeMovie[]>([])
@@ -154,25 +155,27 @@ export function SwipePreferencePage({ onProfileUpdate }: SwipePreferencePageProp
     setIsAnalyzing(true)
     setAgentError('')
 
-    codexAgentSdk
-      .analyzeSwipePreferences({
-        likes: likedMovies.map((movie) => ({
-          title: movie.title,
-          year: movie.year,
-          genres: movie.genres,
-          runtime: movie.runtime,
-          mood: movie.mood,
-          setup: movie.setup
-        })),
-        dislikes: dislikedMovies.map((movie) => ({
-          title: movie.title,
-          year: movie.year,
-          genres: movie.genres,
-          runtime: movie.runtime,
-          mood: movie.mood,
-          setup: movie.setup
-        }))
-      })
+    analyzeSwipePreferences({
+      likes: likedMovies.map((movie) => ({
+        title: movie.title,
+        year: movie.year,
+        genres: movie.genres,
+        runtime: movie.runtime,
+        mood: movie.mood,
+        setup: movie.setup
+      })),
+      dislikes: dislikedMovies.map((movie) => ({
+        title: movie.title,
+        year: movie.year,
+        genres: movie.genres,
+        runtime: movie.runtime,
+        mood: movie.mood,
+        setup: movie.setup
+      })),
+      settings: {
+        preferenceText
+      }
+    })
       .then((profile) => {
         if (cancelled) {
           return
@@ -184,7 +187,7 @@ export function SwipePreferencePage({ onProfileUpdate }: SwipePreferencePageProp
         if (cancelled) {
           return
         }
-        const message = error instanceof Error ? error.message : 'Could not generate profile from frontend SDK runtime.'
+        const message = error instanceof Error ? error.message : 'Could not generate profile from agent runtime.'
         setAgentError(message)
         onProfileUpdate(null)
       })
@@ -197,7 +200,7 @@ export function SwipePreferencePage({ onProfileUpdate }: SwipePreferencePageProp
     return () => {
       cancelled = true
     }
-  }, [workflowComplete, likedMovies, dislikedMovies, isAnalyzing, agentProfile, onProfileUpdate])
+  }, [workflowComplete, likedMovies, dislikedMovies, isAnalyzing, agentProfile, onProfileUpdate, preferenceText])
 
   function handleSwipe(direction: Direction) {
     if (!activeMovie) {
@@ -228,7 +231,7 @@ export function SwipePreferencePage({ onProfileUpdate }: SwipePreferencePageProp
         <p className="eyebrow">Step 1: Preference Discovery</p>
         <h2 className="section-title">Swipe left or right to train your movie taste profile</h2>
         <p className="section-copy">
-          This workflow uses frontend Codex Agent SDK logic with loaded skills to infer your taste profile.
+          This workflow uses your swipe behavior to estimate favorite genres, runtime comfort, and mood alignment.
         </p>
       </header>
 
@@ -251,7 +254,7 @@ export function SwipePreferencePage({ onProfileUpdate }: SwipePreferencePageProp
               </h3>
               <p className="card-copy">{agentProfile?.tasteThesis || tasteLine}</p>
               <p className="recommendation">Recommendation: {agentProfile?.recommendation || recommendation}</p>
-              {isAnalyzing ? <p className="status-line">Frontend Codex Agent SDK is analyzing your swipes...</p> : null}
+              {isAnalyzing ? <p className="status-line">Codex Agent SDK is analyzing your swipes...</p> : null}
               {agentError ? <p className="error-line">{agentError}</p> : null}
               <button className="btn btn-secondary" onClick={resetWorkflow}>
                 Run Again

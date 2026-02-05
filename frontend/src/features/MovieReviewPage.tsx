@@ -1,16 +1,18 @@
 import { FormEvent, useState } from 'react'
 
-import { codexAgentSdk, type GeneratedMovieReview, type SwipeAnalysis } from '@/lib/codexAgentSdk'
+import { generateMovieReview, type GeneratedMovieReview, type SwipeAnalysis } from '@/lib/api'
 
 type MovieReviewPageProps = {
   swipeContext: SwipeAnalysis | null
+  preferenceText: string
 }
 
 function ratingLabel(rating: number) {
-  return `${Math.max(1, Math.min(5, Math.round(rating)))}/5`
+  const clamped = Math.max(1, Math.min(5, Math.round(rating)))
+  return `${clamped}/5`
 }
 
-export function MovieReviewPage({ swipeContext }: MovieReviewPageProps) {
+export function MovieReviewPage({ swipeContext, preferenceText }: MovieReviewPageProps) {
   const [query, setQuery] = useState('')
   const [selectedMovie, setSelectedMovie] = useState<GeneratedMovieReview | null>(null)
   const [searchAttempt, setSearchAttempt] = useState('')
@@ -31,13 +33,16 @@ export function MovieReviewPage({ swipeContext }: MovieReviewPageProps) {
 
     try {
       setIsLoading(true)
-      const review = await codexAgentSdk.generateMovieReview({
+      const review = await generateMovieReview({
         title,
-        swipeContext
+        swipeContext,
+        settings: {
+          preferenceText
+        }
       })
       setSelectedMovie(review)
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Could not generate review from frontend SDK runtime.'
+      const message = error instanceof Error ? error.message : 'Could not fetch review from agent runtime.'
       setErrorMessage(message)
       setSelectedMovie(null)
     } finally {
@@ -51,8 +56,7 @@ export function MovieReviewPage({ swipeContext }: MovieReviewPageProps) {
         <p className="eyebrow">Step 2: Review Lookup</p>
         <h2 className="section-title">Search any movie and get an instant review brief</h2>
         <p className="section-copy">
-          This page runs entirely in frontend and uses Codex-style SDK logic with local skill files loaded into prompt
-          context.
+          This page is backed by Codex Agent SDK. It uses local skill files plus your swipe profile when available.
         </p>
       </header>
 
@@ -75,8 +79,9 @@ export function MovieReviewPage({ swipeContext }: MovieReviewPageProps) {
         </div>
         <p className="search-hint">
           {swipeContext
-            ? `Personalized using profile: ${swipeContext.personaLabel}`
-            : 'Run Step 1 first for personalized review generation.'}
+            ? `Personalized from profile: ${swipeContext.personaLabel}`
+            : 'Run Step 1 first to personalize review generation.'}
+          {preferenceText.trim() ? ' Settings text is included in the prompt.' : ''}
         </p>
       </form>
 
